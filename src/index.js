@@ -1,9 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './style.css'
+
 import AppHeader from './components/app-header'
 import SearchPanel from './components/search-panel'
 import TodoList from './components/todo-list.js'
+import ItemStatusFilter from './components/item-status-filter'
+
+import './index.css'
 
 const App = () => {
   const todoItems = [
@@ -13,9 +16,12 @@ const App = () => {
   ]
 
   return (
-    <div>
-      <AppHeader />
-      <SearchPanel />
+    <div className="todo-app">
+      <AppHeader activeTasks={3} completeTasks={1} />
+      <div className="top-panel d-flex">
+        <SearchPanel />
+        <ItemStatusFilter />
+      </div>
       <TodoList todoItems={todoItems} />
     </div>
   )
