@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 
 import AppHeader from '../app-header'
 import SearchPanel from '../search-panel'
@@ -7,23 +7,43 @@ import ItemStatusFilter from '../item-status-filter'
 
 import './app.css'
 
-const App = () => {
-  const todoItems = [
-    { title: 'Выпить кофеек', isImportant: false, id: 1 },
-    { title: 'Сделать Todo приложение', isImportant: true, id: 2 },
-    { title: 'Погулять на свежем воздухе', isImportant: false, id: 3 },
-  ]
+export default class App extends Component {
+  state = {
+    todoItems: [
+      { title: 'Выпить кофеек', isImportant: false, id: 1 },
+      { title: 'Сделать Todo приложение', isImportant: true, id: 2 },
+      { title: 'Погулять на свежем воздухе', isImportant: false, id: 3 },
+    ],
+  }
 
-  return (
-    <div className="todo-app">
-      <AppHeader activeTasks={3} completeTasks={1} />
-      <div className="top-panel d-flex">
-        <SearchPanel />
-        <ItemStatusFilter />
+  deleteTask = id => {
+    this.setState(({ todoItems }) => {
+      const index = todoItems.findIndex(elem => elem.id === id)
+
+      const newTodoItems = [
+        ...todoItems.slice(0, index),
+        ...todoItems.slice(index + 1),
+      ]
+
+      return {
+        todoItems: newTodoItems,
+      }
+    })
+  }
+
+  render() {
+    return (
+      <div className="todo-app">
+        <AppHeader activeTasks={3} completeTasks={1} />
+        <div className="top-panel d-flex">
+          <SearchPanel />
+          <ItemStatusFilter />
+        </div>
+        <TodoList
+          todoItems={this.state.todoItems}
+          onDeleteTask={this.deleteTask}
+        />
       </div>
-      <TodoList todoItems={todoItems} />
-    </div>
-  )
+    )
+  }
 }
-
-export default App
