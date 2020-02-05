@@ -4,6 +4,7 @@ import AppHeader from '../app-header'
 import SearchPanel from '../search-panel'
 import TodoList from '../todo-list'
 import ItemStatusFilter from '../item-status-filter'
+import AddTask from '../add-task'
 
 import './app.css'
 
@@ -31,6 +32,22 @@ export default class App extends Component {
     })
   }
 
+  addTask = description => {
+    this.setState(({ todoItems }) => {
+      const newTask = {
+        title: description,
+        isImportant: false,
+        id: todoItems[todoItems.length - 1].id + 1,
+      }
+
+      const newTodoItems = [...todoItems, newTask]
+
+      return {
+        todoItems: newTodoItems,
+      }
+    })
+  }
+
   render() {
     return (
       <div className="todo-app">
@@ -43,6 +60,7 @@ export default class App extends Component {
           todoItems={this.state.todoItems}
           onDeleteTask={this.deleteTask}
         />
+        <AddTask addTask={this.addTask} />
       </div>
     )
   }
