@@ -11,9 +11,24 @@ import './app.css'
 export default class App extends Component {
   state = {
     todoItems: [
-      { title: 'Выпить кофеек', isImportant: false, id: 1 },
-      { title: 'Сделать Todo приложение', isImportant: true, id: 2 },
-      { title: 'Погулять на свежем воздухе', isImportant: false, id: 3 },
+      {
+        title: 'Выпить кофеек',
+        isTaskComplete: false,
+        isImportant: false,
+        id: 1,
+      },
+      {
+        title: 'Сделать Todo приложение',
+        isTaskComplete: false,
+        isImportant: false,
+        id: 2,
+      },
+      {
+        title: 'Погулять на свежем воздухе',
+        isTaskComplete: false,
+        isImportant: false,
+        id: 3,
+      },
     ],
   }
 
@@ -48,6 +63,40 @@ export default class App extends Component {
     })
   }
 
+  onToggleIsImportant = id => {
+    this.setState(({ todoItems }) => {
+      const newTodoItems = [...todoItems]
+
+      newTodoItems.map(task => {
+        if (task.id === id) {
+          task.isImportant = !task.isImportant
+        }
+        return task
+      })
+
+      return {
+        todoItems: newTodoItems,
+      }
+    })
+  }
+
+  onToggleIsTaskComplete = id => {
+    this.setState(({ todoItems }) => {
+      const newTodoItems = [...todoItems]
+
+      newTodoItems.map(task => {
+        if (task.id === id) {
+          task.isTaskComplete = !task.isTaskComplete
+        }
+        return task
+      })
+
+      return {
+        todoItems: newTodoItems,
+      }
+    })
+  }
+
   render() {
     return (
       <div className="todo-app">
@@ -59,6 +108,8 @@ export default class App extends Component {
         <TodoList
           todoItems={this.state.todoItems}
           onDeleteTask={this.deleteTask}
+          onToggleIsImportant={this.onToggleIsImportant}
+          onToggleIsTaskComplete={this.onToggleIsTaskComplete}
         />
         <AddTask addTask={this.addTask} />
       </div>

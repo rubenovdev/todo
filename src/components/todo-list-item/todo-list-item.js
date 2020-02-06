@@ -2,31 +2,15 @@ import React, { Component } from 'react'
 import './todo-list-item.css'
 
 export default class TodoListItem extends Component {
-  state = {
-    isTaskComplete: false,
-    isImportant: false,
-  }
-
-  onTitleClick = () => {
-    this.setState(state => {
-      return {
-        isTaskComplete: !state.isTaskComplete,
-      }
-    })
-  }
-
-  onImportantIconCkick = () => {
-    this.setState(state => {
-      return {
-        isImportant: !state.isImportant,
-      }
-    })
-  }
-
   render() {
-    const { title, onDeleteTask } = this.props
-
-    const { isTaskComplete, isImportant } = this.state
+    const {
+      title,
+      isImportant,
+      isTaskComplete,
+      onDeleteTask,
+      onToggleIsImportant,
+      onToggleIsTaskComplete,
+    } = this.props
 
     let classNames = 'todo-list-item'
 
@@ -36,14 +20,14 @@ export default class TodoListItem extends Component {
 
     return (
       <span className={classNames}>
-        <span className="todo-list-item-label" onClick={this.onTitleClick}>
+        <span className="todo-list-item-label" onClick={onToggleIsTaskComplete}>
           {title}
         </span>
 
         <button
           type="button"
           className="btn btn-outline-success btn-sm float-right"
-          onClick={this.onImportantIconCkick}
+          onClick={onToggleIsImportant}
         >
           <i className="fa fa-exclamation" />
         </button>
