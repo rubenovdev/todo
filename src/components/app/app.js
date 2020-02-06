@@ -9,27 +9,23 @@ import AddTask from '../add-task'
 import './app.css'
 
 export default class App extends Component {
+  maxTaskId = 100
+
   state = {
     todoItems: [
-      {
-        title: 'Выпить кофеек',
-        isTaskComplete: false,
-        isImportant: false,
-        id: 1,
-      },
-      {
-        title: 'Сделать Todo приложение',
-        isTaskComplete: false,
-        isImportant: false,
-        id: 2,
-      },
-      {
-        title: 'Погулять на свежем воздухе',
-        isTaskComplete: false,
-        isImportant: false,
-        id: 3,
-      },
+      this.createTask('Выпить кофеек'),
+      this.createTask('Сделать Todo приложение'),
+      this.createTask('Погулять на свежем воздухе'),
     ],
+  }
+
+  createTask(title) {
+    return {
+      title,
+      isTaskComplete: false,
+      isImportant: false,
+      id: this.maxTaskId++,
+    }
   }
 
   deleteTask = id => {
@@ -47,13 +43,9 @@ export default class App extends Component {
     })
   }
 
-  addTask = description => {
+  addTask = title => {
     this.setState(({ todoItems }) => {
-      const newTask = {
-        title: description,
-        isImportant: false,
-        id: todoItems[todoItems.length - 1].id + 1,
-      }
+      const newTask = this.createTask(title)
 
       const newTodoItems = [...todoItems, newTask]
 
@@ -63,50 +55,49 @@ export default class App extends Component {
     })
   }
 
+  toggleProperty = (arr, id, propertyName) => {
+    const index = arr.findIndex(elem => elem.id === id)
+    const oldTask = arr[index]
+    const newTask = { ...oldTask, [propertyName]: !oldTask[propertyName] }
+
+    return [...arr.slice(0, index), newTask, ...arr.slice(index + 1)]
+  }
+
   onToggleIsImportant = id => {
     this.setState(({ todoItems }) => {
-      const newTodoItems = [...todoItems]
-
-      newTodoItems.map(task => {
-        if (task.id === id) {
-          task.isImportant = !task.isImportant
-        }
-        return task
-      })
-
       return {
-        todoItems: newTodoItems,
+        todoItems: this.toggleProperty(todoItems, id, 'isImportant'),
       }
     })
   }
 
   onToggleIsTaskComplete = id => {
     this.setState(({ todoItems }) => {
-      const newTodoItems = [...todoItems]
-
-      newTodoItems.map(task => {
-        if (task.id === id) {
-          task.isTaskComplete = !task.isTaskComplete
-        }
-        return task
-      })
-
       return {
-        todoItems: newTodoItems,
+        todoItems: this.toggleProperty(todoItems, id, 'isTaskComplete'),
       }
     })
   }
 
   render() {
+    const { todoItems } = this.state
+
+    const completeTasksCounter = todoItems.filter(task => task.isTaskComplete)
+      .length
+    const activeTasksCounter = todoItems.length - completeTasksCounter
+
     return (
       <div className="todo-app">
-        <AppHeader activeTasks={3} completeTasks={1} />
+        <AppHeader
+          activeTasks={activeTasksCounter}
+          completeTasks={completeTasksCounter}
+        />
         <div className="top-panel d-flex">
           <SearchPanel />
           <ItemStatusFilter />
         </div>
         <TodoList
-          todoItems={this.state.todoItems}
+          todoItems={todoItems}
           onDeleteTask={this.deleteTask}
           onToggleIsImportant={this.onToggleIsImportant}
           onToggleIsTaskComplete={this.onToggleIsTaskComplete}
