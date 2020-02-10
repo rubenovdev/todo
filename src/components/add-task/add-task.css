@@ -1,3 +1,11 @@
 .add-task-form {
   margin-top: 10px;
 }
+
+.add-task-form input {
+  margin-right: 5px;
+}
+
+.add-task-form button {
+  min-width: 170px;
+}
