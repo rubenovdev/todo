@@ -17,6 +17,8 @@ export default class App extends Component {
       this.createTask('Сделать Todo приложение'),
       this.createTask('Погулять на свежем воздухе'),
     ],
+    searchingTasks: [],
+    searchQuery: '',
   }
 
   createTask(title) {
@@ -79,8 +81,31 @@ export default class App extends Component {
     })
   }
 
+  onChangeSearchQuery = event => {
+    const value = event.target.value
+
+    this.setState(({ todoItems }) => {
+      const newTodoTasks = todoItems.filter(task => {
+        return task.title.toLowerCase().includes(value.toLowerCase())
+      })
+      console.log(newTodoTasks)
+
+      return {
+        searchingTasks: newTodoTasks,
+        searchQuery: value,
+      }
+    })
+  }
+
+  onSubmitSearchPanelForm = event => {
+    event.preventDefault()
+    this.setState({
+      searchQuery: '',
+    })
+  }
+
   render() {
-    const { todoItems } = this.state
+    const { todoItems, searchQuery, searchingTasks } = this.state
 
     const completeTasksCounter = todoItems.filter(task => task.isTaskComplete)
       .length
@@ -93,11 +118,15 @@ export default class App extends Component {
           completeTasks={completeTasksCounter}
         />
         <div className="top-panel d-flex">
-          <SearchPanel />
+          <SearchPanel
+            onChangeSearchPanel={this.onChangeSearchQuery}
+            onSubmitSearchPanelForm={this.onSubmitSearchPanelForm}
+            searchQuery={searchQuery}
+          />
           <ItemStatusFilter />
         </div>
         <TodoList
-          todoItems={todoItems}
+          todoItems={searchQuery ? searchingTasks : todoItems}
           onDeleteTask={this.deleteTask}
           onToggleIsImportant={this.onToggleIsImportant}
           onToggleIsTaskComplete={this.onToggleIsTaskComplete}
