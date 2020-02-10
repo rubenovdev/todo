@@ -17,8 +17,10 @@ export default class App extends Component {
       this.createTask('Сделать Todo приложение'),
       this.createTask('Погулять на свежем воздухе'),
     ],
-    searchingTasks: [],
     searchQuery: '',
+    searchingTasks: [],
+    filterName: '',
+    filteredTasks: [],
   }
 
   createTask(title) {
@@ -88,7 +90,6 @@ export default class App extends Component {
       const newTodoTasks = todoItems.filter(task => {
         return task.title.toLowerCase().includes(value.toLowerCase())
       })
-      console.log(newTodoTasks)
 
       return {
         searchingTasks: newTodoTasks,
@@ -104,8 +105,33 @@ export default class App extends Component {
     })
   }
 
+  onChangeFilter = event => {
+    let filterName = event.target.textContent
+
+    this.setState(({ todoItems }) => {
+      let newTodoTasks = []
+
+      if (filterName === 'Активные')
+        newTodoTasks = todoItems.filter(task => task.isTaskComplete === false)
+      else if (filterName === 'Выполненные')
+        newTodoTasks = todoItems.filter(task => task.isTaskComplete === true)
+      else filterName = ''
+
+      return {
+        filteredTasks: newTodoTasks,
+        filterName,
+      }
+    })
+  }
+
   render() {
-    const { todoItems, searchQuery, searchingTasks } = this.state
+    const {
+      todoItems,
+      searchQuery,
+      searchingTasks,
+      filteredTasks,
+      filterName,
+    } = this.state
 
     const completeTasksCounter = todoItems.filter(task => task.isTaskComplete)
       .length
@@ -123,10 +149,16 @@ export default class App extends Component {
             onSubmitSearchPanelForm={this.onSubmitSearchPanelForm}
             searchQuery={searchQuery}
           />
-          <ItemStatusFilter />
+          <ItemStatusFilter onChangeFilter={this.onChangeFilter} />
         </div>
         <TodoList
-          todoItems={searchQuery ? searchingTasks : todoItems}
+          todoItems={
+            searchQuery
+              ? searchingTasks
+              : filterName
+              ? filteredTasks
+              : todoItems
+          }
           onDeleteTask={this.deleteTask}
           onToggleIsImportant={this.onToggleIsImportant}
           onToggleIsTaskComplete={this.onToggleIsTaskComplete}
