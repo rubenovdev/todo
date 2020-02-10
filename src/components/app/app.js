@@ -149,7 +149,10 @@ export default class App extends Component {
             onSubmitSearchPanelForm={this.onSubmitSearchPanelForm}
             searchQuery={searchQuery}
           />
-          <ItemStatusFilter onChangeFilter={this.onChangeFilter} />
+          <ItemStatusFilter
+            onChangeFilter={this.onChangeFilter}
+            filterName={filterName}
+          />
         </div>
         <TodoList
           todoItems={
